@@ -33,44 +33,60 @@ def main():
 	score = 0
 	
 	run = True
+	start = True
+	# e = True
 	while run:
 		clock.tick(30)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False
 		
-		# remove_pipes = []
-		# passed = False
-		# for pipe in pipes:
-		# 	if pipe.collide(bird):
-		# 		pass
+		keys_pressed = pygame.key.get_pressed()
+		if start:
+			draw_window(window, bird, base, pipes, score)
+			if keys_pressed[pygame.K_SPACE]:
+				bird.jump()
+				start = False
+		else:
+			remove_pipes = []
+			passed = False
+			for pipe in pipes:
+				if pipe.collide(bird):
+					pass
+				
+				if pipe.x + pipe.PIPE_TOP.get_width() < 0:
+					remove_pipes.append(pipe)
+
+				if not pipe.passed and pipe.x < bird.x:
+					pipe.passed = True
+					passed = True
+
+				pipe.move()
 			
-		# 	if pipe.x + pipe.PIPE_TOP.get_width() < 0:
-		# 		remove_pipes.append(pipe)
+			# if the bird passed the pipe increment score and add new pipe
+			if passed:
+				score += 1
+				pipes.append(Pipe(600))
+			
+			# delete pipes that are out of the screen
+			for remove in remove_pipes:
+				pipes.remove(remove)
 
-		# 	if not pipe.passed and pipe.x < bird.x:
-		# 		pipe.passed = True
-		# 		passed = True
+			# check if the bird hit the ground
+			if bird.x + bird.img.get_height() >= 730:
+				pass
 
-		# 	pipe.move()
-		
-		# # if the bird passed the pipe increment score and add new pipe
-		# if passed:
-		# 	score += 1
-		# 	pipes.append(Pipe(600))
-		
-		# # delete pipes that are out of the screen
-		# for remove in remove_pipes:
-		# 	pipes.remove(remove)
+			keys_pressed = pygame.key.get_pressed()
 
-		# # check if the bird hit the ground
-		# if bird.x + bird.img.get_height() >= 730:
-		# 	pass
-		
-		
-		bird.move()
-		base.move()
-		draw_window(window, bird, base, pipes, score)
+			# jump while playing
+			if keys_pressed[pygame.K_SPACE]:
+				bird.jump()
+			# if e:
+			# 	bird.jump()
+			# 	e = False
+			bird.move()
+			base.move()
+			draw_window(window, bird, base, pipes, score)
 
 	pygame.quit()
 	quit()

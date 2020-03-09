@@ -36,7 +36,7 @@ class Bird:
 		# keep track of when are we last jump
 		self.tick_count = 0
 		# where the bird started to jump
-		# self.height = self.y
+		self.height = self.y
 		
 
 	def move(self):
@@ -53,7 +53,7 @@ class Bird:
 			if self.tilt < self.MAX_ROTATION:
 				self.tilt = self.MAX_ROTATION
 		else:
-			if self.tilt > -90:
+			if self.tilt > -90 and self.y > self.hight + 50:
 				self.tilt -= 20
 
 	def draw(self, window):
