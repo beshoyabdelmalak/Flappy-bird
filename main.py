@@ -62,6 +62,11 @@ def game_loop():
 			remove_pipes = []
 			passed = False
 			crashed = False
+
+			if base.collide(bird):
+				crashed = True
+				crash(window, score)
+					
 			for pipe in pipes:
 				if pipe.collide(bird):
 					crashed = True

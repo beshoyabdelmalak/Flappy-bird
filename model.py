@@ -168,7 +168,7 @@ class Base:
 		window.blit(self.IMG, (self.x2, self.y))
 
 	
-	def collid(self,bird):
+	def collide(self,bird):
 		bird_mask = bird.get_mask()
 		base_mask = pygame.mask.from_surface(self.IMG)
 
