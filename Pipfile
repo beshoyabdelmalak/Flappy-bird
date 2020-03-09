@@ -9,6 +9,7 @@ black = "*"
 [packages]
 neat-python = "*"
 pygame = "==2.0.0.dev4"
+ptext = "*"
 
 [requires]
 python_version = "3.7"

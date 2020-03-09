@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 from model import Bird, Base, Pipe
 
 pygame.font.init()
@@ -23,7 +24,17 @@ def draw_window(window, bird, base, pipes, score):
 	bird.draw(window)
 	pygame.display.update()
 
-def main():
+
+def crash(window, score):
+	window.blit(BG_IMG, (0,0))
+	score = STAT_FONT.render("SCORE: " + str(score), 1, (255,255,255))
+	replay = STAT_FONT.render("HIT SPACE TO PLAY AGAIN ", 1, (255,255,255))
+	window.blit(score, (150, 200))
+	window.blit(replay, (20, 200 + score.get_height()+ 10))
+	pygame.display.update()
+
+
+def game_loop():
 	bird = Bird(200,200)
 	base = Base(730)
 	pipes = [Pipe(600)]
@@ -50,9 +61,12 @@ def main():
 		else:
 			remove_pipes = []
 			passed = False
+			crashed = False
 			for pipe in pipes:
 				if pipe.collide(bird):
-					pass
+					crashed = True
+					crash(window, score)
+					break
 				
 				if pipe.x + pipe.PIPE_TOP.get_width() < 0:
 					remove_pipes.append(pipe)
@@ -63,31 +77,39 @@ def main():
 
 				pipe.move()
 			
-			# if the bird passed the pipe increment score and add new pipe
-			if passed:
-				score += 1
-				pipes.append(Pipe(600))
-			
-			# delete pipes that are out of the screen
-			for remove in remove_pipes:
-				pipes.remove(remove)
+			# in case of collision check if player wants to replay
+			if crashed:
+				keys_pressed = pygame.key.get_pressed()
+				if keys_pressed[pygame.K_SPACE]:
+					main()
 
-			# check if the bird hit the ground
-			if bird.x + bird.img.get_height() >= 730:
-				pass
+			else:
+				# if the bird passed the pipe increment score and add new pipe
+				if passed:
+					score += 1
+					pipes.append(Pipe(600))
+				
+				# delete pipes that are out of the screen
+				for remove in remove_pipes:
+					pipes.remove(remove)
 
-			keys_pressed = pygame.key.get_pressed()
+				# check if the bird hit the ground
+				if bird.x + bird.img.get_height() >= 730:
+					pass
 
-			# jump while playing
-			if keys_pressed[pygame.K_SPACE]:
-				bird.jump()
-			# if e:
-			# 	bird.jump()
-			# 	e = False
-			bird.move()
-			base.move()
-			draw_window(window, bird, base, pipes, score)
+				keys_pressed = pygame.key.get_pressed()
 
+				# jump while playing
+				if keys_pressed[pygame.K_SPACE]:
+					bird.jump()
+				
+				bird.move()
+				base.move()
+				draw_window(window, bird, base, pipes, score)
+
+
+def main():
+	game_loop()
 	pygame.quit()
 	quit()
 

@@ -49,9 +49,11 @@ class Bird:
 		
 		self.y = self.y + distance
 
+		# if going up
 		if distance < 0:
 			if self.tilt < self.MAX_ROTATION:
 				self.tilt = self.MAX_ROTATION
+		# if going down
 		else:
 			if self.tilt > -90 and self.y > self.hight + 50:
 				self.tilt -= 20
@@ -164,3 +166,20 @@ class Base:
 	def draw(self, window):
 		window.blit(self.IMG, (self.x1, self.y))
 		window.blit(self.IMG, (self.x2, self.y))
+
+	
+	def collid(self,bird):
+		bird_mask = bird.get_mask()
+		base_mask = pygame.mask.from_surface(self.IMG)
+
+		first_offset = (self.x1 - bird.x, self.y - round(bird.y))
+		second_offset = (self.x2 - bird.x, self.y - round(bird.y))
+
+		first_point = bird_mask.overlap(base_mask, first_offset)
+		second_point = bird_mask.overlap(base_mask, second_offset)
+
+		# check if the masks collide
+		if first_point or second_point:
+			return True
+		
+		return False
